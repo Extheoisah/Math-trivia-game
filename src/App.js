@@ -1,10 +1,21 @@
+import { Routes, Route } from "react-router-dom";
+import HomeComponent from "./components/HomeComponent/HomeComponent";
+import GameStartComponent from "./components/GameComponent/GameStartComponent";
+import GameEndComponent from "./components/GameComponent/GameEndComponent";
 import "./App.css";
 
 function App() {
   return (
     <>
-      <h1>Math trivia game</h1>
-      <p>Global styles are in the index.css </p>
+      <div>
+        <Routes>
+          <Route path="/" element={<HomeComponent />} />
+
+          <Route path="/game-start" element={<GameStartComponent />} />
+
+          <Route path="/game-end" element={<GameEndComponent />} />
+        </Routes>
+      </div>
     </>
   );
 }
