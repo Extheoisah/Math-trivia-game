@@ -8,8 +8,8 @@
 
 :root {
   /* color */
-  --pry-clr: hsla(158, 67, 85, 13%);
-  --dark-clr: hsl(248, 29, 16);
+  --pry-clr: rgba(5, 207, 136, 0.13);
+  --dark-clr: rgb(32, 29, 53);
   --transparent-clr: hsla(0, 0, 100, 13%);
 
   /* font */
@@ -30,13 +30,19 @@ body {
 
 .game-start {
   background-color: rgb(32, 29, 53);
-  width: 95vw;
+  width: 90vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 1rem 0rem;
   border-radius: 4px;
+}
+
+@media (min-width: 768px) {
+  .game-start {
+    width: 70vw;
+  }
 }
 
 .btn {

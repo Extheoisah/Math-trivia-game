@@ -1,4 +1,5 @@
 import React from "react";
+import { questions } from "../questions";
 
 const QuestionComponent = () => {
   const style = {
@@ -16,11 +17,10 @@ const QuestionComponent = () => {
     padding: ".5rem 1rem",
     borderRadius: "4px",
   };
+
   return (
     <div style={style}>
-      <p>18/2</p>
-      <p>=</p>
-      <p>9</p>
+      <pre style={{ fontFamily: "Lobster" }}>{questions[0].questionText}</pre>
     </div>
   );
 };

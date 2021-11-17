@@ -1,12 +1,18 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import TriviaContext from "../../context";
 
 const HomeComponent = () => {
+  const { setGameState } = useContext(TriviaContext);
   return (
     <div>
       <h2>Math Trivia Game</h2>
-      <Link to="/game-start">Game Start</Link>
-      <Link to="/game-end">Game End</Link>
+      <button
+        onClick={() => {
+          setGameState("start");
+        }}
+      >
+        Start Game
+      </button>
     </div>
   );
 };

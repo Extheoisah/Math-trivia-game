@@ -1,6 +1,6 @@
 import React from "react";
 
-const ScoreComponent = () => {
+const ScoreComponent = ({ score }) => {
   const divStyles = {
     display: "flex",
     flexDirection: "column",
@@ -26,7 +26,7 @@ const ScoreComponent = () => {
           fontSize: "1.5rem",
         }}
       >
-        0
+        {score}
       </p>
     </div>
   );

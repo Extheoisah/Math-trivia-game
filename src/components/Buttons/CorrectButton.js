@@ -1,10 +1,12 @@
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
 
-const CorrectButton = () => {
+const CorrectButton = ({ answerHandler }) => {
   return (
-    <div>
-      <FaCheckCircle style={{ color: "3EDA73", fontSize: "60px" }} />
+    <div onClick={answerHandler}>
+      <FaCheckCircle
+        style={{ color: "3EDA73", fontSize: "60px", cursor: "pointer" }}
+      />
     </div>
   );
 };
