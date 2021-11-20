@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@500;700;900&display=swap");
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* COLOR */
+    --bg-clr: rgba(191, 242, 224, 0.31);
+    --pry-clr: rgb(9, 4, 24);
+    --green: rgba(62, 218, 114, 0.88);
+    --white: rgb(255, 255, 255);
+    --white-accent: rgba(177, 165, 165, 0.185);
+    --red: rgb(252, 44, 44);
+    /* FONT */
+    --header-font: "Lobster", cursive;
+    --body-font: "Roboto", sans-serif;
+}
+
+body {
+    font-family: var(--body-font);
+    background-color: var(--bg-clr);
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+footer {
+    color: var(--white);
+    font-size: .7em;
+    padding: 5px;
+    margin-top: auto;
+}

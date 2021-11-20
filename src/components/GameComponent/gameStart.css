@@ -1,0 +1,6 @@
+.btn {
+    display: flex;
+    column-gap: 50px;
+    justify-content: space-evenly;
+    background-color: transparent;
+}
