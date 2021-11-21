@@ -11,7 +11,7 @@ import ProgressBar from "../ProgressBar";
 export const GameStartComponent = () => {
   const { setGameState } = useContext(TriviaContext);
   const [score, setScore] = useState(0);
-  const [time, setTime] = useState(80);
+  const [time, setTime] = useState(60);
 
   const answerHandler = () => {
     if (questions[0].answer === "correct") {
