@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import CorrectButton from "../Buttons/CorrectButton";
 import WrongButton from "../Buttons/WrongButton";
 import QuestionComponent from "./QuestionComponent";
@@ -11,14 +11,24 @@ import ProgressBar from "../ProgressBar";
 export const GameStartComponent = () => {
   const { setGameState } = useContext(TriviaContext);
   const [score, setScore] = useState(0);
-  const [time, setTime] = useState(60);
+  const [time, setTime] = useState(100);
 
   const answerHandler = () => {
     if (questions[0].answer === "correct") {
       setScore((prevScore) => prevScore + 1);
     }
-    
   };
+
+  useEffect(() => {
+    const decr = setInterval(()=>{
+      setTime(time=>time-2);
+    },500);
+
+    return ()=>{
+      clearInterval(decr);
+      setTime(time+10);
+    }
+  }, [score]);
 
   return (
     <>
@@ -39,6 +49,7 @@ export const GameStartComponent = () => {
       >
         End Game
       </button>
+      
     </>
   );
 };
