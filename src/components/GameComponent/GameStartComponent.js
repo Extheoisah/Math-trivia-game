@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
 import CorrectButton from "../Buttons/CorrectButton";
 import WrongButton from "../Buttons/WrongButton";
 import QuestionComponent from "./QuestionComponent";
@@ -10,7 +11,8 @@ import ProgressBar from "../ProgressBar";
 import { Link } from "react-router-dom";
 
 export const GameStartComponent = () => {
-  const { setGameState, setScore, score } = useContext(TriviaContext);
+  const { setScore, score } = useContext(TriviaContext);
+  const navigate = useNavigate();
   const time = useRef(100);
   const count = useRef(0);
   const animId = useRef(null);
@@ -26,7 +28,7 @@ export const GameStartComponent = () => {
   const decrementTime = (amt)=>{
     time.current -=amt;
     if(time.current<=0){
-      setGameState('end');
+      navigate('/end');
       return;
     }
     timerRef.current.style.width = `${time.current}%`;

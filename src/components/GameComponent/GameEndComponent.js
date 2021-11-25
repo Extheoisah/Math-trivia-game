@@ -45,9 +45,9 @@ const GameEndComponent = () => {
       </button>
       </Link>
 
-      <div>
+      {/* <div>
         {topPlayers && <ul><li key={topPlayers.key}>{topPlayers.question}</li></ul>}
-      </div>
+      </div> */}
     </div>
   );
 };
