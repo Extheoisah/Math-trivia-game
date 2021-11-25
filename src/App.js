@@ -8,10 +8,11 @@ import TriviaContext from "./context";
 
 function App() {
   const [gameState, setGameState] = useState("home");
+  const [score, setScore] = useState(0);
   return (
 
     <div className="App">
-      <TriviaContext.Provider value={{ gameState, setGameState }}>
+      <TriviaContext.Provider value={{ gameState, setGameState, score, setScore}}>
         {gameState === "home" && <HomeComponent />}
         {gameState === "start" && <GameStartComponent />}
         {gameState === "end" && <GameEndComponent />}

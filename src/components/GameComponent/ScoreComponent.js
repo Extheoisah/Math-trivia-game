@@ -25,6 +25,7 @@ const ScoreComponent = ({ score }) => {
           color: "#fff",
           fontSize: "1.5rem",
         }}
+
       >
         {score}
       </p>
