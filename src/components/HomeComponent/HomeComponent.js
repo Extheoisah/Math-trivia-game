@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
+import {useNavigate} from 'react-router-dom';
 import { FaExclamationCircle, FaPlay } from "react-icons/fa";
-import TriviaContext from "../../context";
 
 import './HomeComponent.css';
 
 const HomeComponent = () => {
-  const { setGameState } = useContext(TriviaContext);
+  const navigate = useNavigate();
 
   const handleClick = () => {
     let user = document.getElementById("username");
@@ -13,7 +13,7 @@ const HomeComponent = () => {
       document.getElementById('error').style.display='block';
       return;
     }
-    setGameState("start");
+    navigate('/start')
   }
   
 

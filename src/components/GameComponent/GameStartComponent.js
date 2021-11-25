@@ -7,6 +7,7 @@ import { questions } from "../questions";
 import TriviaContext from "../../context";
 import './gameStart.css';
 import ProgressBar from "../ProgressBar";
+import { Link } from "react-router-dom";
 
 export const GameStartComponent = () => {
   const { setGameState, setScore, score } = useContext(TriviaContext);
@@ -86,13 +87,11 @@ export const GameStartComponent = () => {
         </div>
 
       </div>
-      <button
-        onClick={() => {
-          setGameState("end");
-        }}
-      >
+      <Link to='/end'>
+      <button>
         End Game
       </button>
+      </Link>
       <div>Hello</div>
 
     </>
