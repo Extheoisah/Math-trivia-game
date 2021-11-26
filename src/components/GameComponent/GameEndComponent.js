@@ -5,25 +5,21 @@ import LeaderBoard from "./LeaderBoard";
 import ScoreComponent from "./ScoreComponent";
 import './gameEnd.css';
 import { Link } from "react-router-dom";
+import RetryButton from "../Buttons/RetryButton";
 
 
 const GameEndComponent = () => {
-  const { setGameState, score, setScore } = useContext(TriviaContext);
+  const { score } = useContext(TriviaContext);
   const [topPlayers, setTopPlayers] = useState(null)
 
 
-  useEffect(()=>{
+  useEffect(() => {
     fetch('https://getpantry.cloud/apiv1/pantry/24fadf46-b66c-4a83-950f-6723cdce15a3/basket/newBasket')
-    .then(resp=>resp.json())
-    .then(setTopPlayers)
-    .catch(()=>console.log("error"))
+      .then(resp => resp.json())
+      .then(setTopPlayers)
+      .catch(() => console.log("error"))
     //.then(data=>console.log(data))
   }, []);
-
-  const rePlay = ()=>{
-    setScore(0);
-    setGameState('start')
-  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
@@ -35,19 +31,19 @@ const GameEndComponent = () => {
       <ProgressBar setTimer={() => { }} />
       <div style={{ display: 'flex' }}>
         <LeaderBoard />
-        <Link to='/start'  className='restart-icon' >
-        <img onClick={rePlay} src="restartArrow.svg" alt="restart" />
+        <Link to='/start' style={{ alignSelf: 'center', marginLeft: '10px' }}>
+          <RetryButton />
         </Link>
       </div>
       <Link to='/'>
-      <button>
-        Home
-      </button>
+        <button>
+          Home
+        </button>
       </Link>
 
-      {/* <div>
+      <div style={{ color: 'white' }}>
         {topPlayers && <ul><li key={topPlayers.key}>{topPlayers.question}</li></ul>}
-      </div> */}
+      </div>
     </div>
   );
 };

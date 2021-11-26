@@ -13,11 +13,12 @@
     overflow-y: scroll;
 }
 
-.leader-board h5 {
+.leader-board h4 {
     align-self: center;
     font-size: 1.4em;
 }
 
 .leader-board ol {
-    margin-left: 10px;
+    margin-left: 20px;
+    font-family: monospace;
 }

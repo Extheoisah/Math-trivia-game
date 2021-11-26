@@ -19,30 +19,30 @@ export const GameStartComponent = () => {
   let timerRef;
 
 
-  const incrementTime = (amt)=>{
-    time.current +=amt;
-    if(time.current>100)time.current=100;
+  const incrementTime = (amt) => {
+    time.current += amt;
+    if (time.current > 100) time.current = 100;
     timerRef.current.style.width = `${time.current}%`;
   }
 
-  const decrementTime = (amt)=>{
-    time.current -=amt;
-    if(time.current<=0){
+  const decrementTime = (amt) => {
+    time.current -= amt;
+    if (time.current <= 0) {
       navigate('/end');
       return;
     }
     timerRef.current.style.width = `${time.current}%`;
-    
+
   }
 
 
   const answerHandler = (isCorrectBtn) => {
-    if(isCorrectBtn){
+    if (isCorrectBtn) {
       if (questions[0].answer === "correct") {
         incrementTime(10);
         setScore((prev) => prev + 1);
       }
-    }else{
+    } else {
       decrementTime(10);
     }
   };
@@ -50,7 +50,7 @@ export const GameStartComponent = () => {
   const play = () => {
 
     count.current++;
-  
+
     if (count.current % 5 === 0) {
       count.current = 0;
       decrementTime(1);
@@ -65,16 +65,17 @@ export const GameStartComponent = () => {
     animId.current = requestAnimationFrame(play);
   }
 
-  const setTimer =(r)=>{
+  const setTimer = (r) => {
     timerRef = r;
   }
 
   useEffect(() => {
+    setScore(0)
     play();
-
     return () => {
       cancelAnimationFrame(animId.current);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -82,17 +83,17 @@ export const GameStartComponent = () => {
       <div className="game-start">
         <ScoreComponent score={score} />
         <QuestionComponent />
-        <ProgressBar setTimer={setTimer}/>
+        <ProgressBar setTimer={setTimer} />
         <div className="btn">
           <CorrectButton answerHandler={answerHandler} />
-          <WrongButton answerHandler={answerHandler}/>
+          <WrongButton answerHandler={answerHandler} />
         </div>
 
       </div>
       <Link to='/end'>
-      <button>
-        End Game
-      </button>
+        <button>
+          End Game
+        </button>
       </Link>
       <div>Hello</div>
 

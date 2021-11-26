@@ -5,14 +5,13 @@ import TriviaContext from "./context";
 import { Outlet } from "react-router";
 
 function App() {
-  const [gameState, setGameState] = useState("home");
   const [score, setScore] = useState(0);
 
   return (
 
     <div className="App">
       
-      <TriviaContext.Provider value={{ gameState, setGameState, score, setScore }}>
+      <TriviaContext.Provider value={{ score, setScore }}>
         <Outlet />
       </TriviaContext.Provider>
 
