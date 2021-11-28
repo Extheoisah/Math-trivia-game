@@ -80,21 +80,6 @@ export const GameStartComponent = () => {
   useEffect(() => {
     score.current = 0;
     play();
-    
-    document.body.addEventListener('keydown', (event)=>
-                                     {
-            const key = event.key;
-            switch (key) {
-                case "ArrowLeft":
-                    answerHandler(true);
-                    break;
-                case "ArrowRight":
-                    answerHandler(false);
-                    break;
-                default:
-            }
-            
-        });
 
     return () => {
       cancelAnimationFrame(animId.current);
@@ -119,9 +104,24 @@ export const GameStartComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handlerKeyDown = (event)=>
+                                     {
+            const key = event.key;
+            switch (key) {
+                case "ArrowLeft":
+                    answerHandler(true);
+                    break;
+                case "ArrowRight":
+                    answerHandler(false);
+                    break;
+                default:
+            }
+            console.log("key!!!")
+        }
+
   return (
     <>
-      <div className="game-start">
+      <div className="game-start" onKeyPress={handlerKeyDown}>
         <ScoreComponent scoreRef={setScoreRef} />
         <QuestionComponent question={question} />
         <ProgressBar setTimer={setTimer} />
