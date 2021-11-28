@@ -10,15 +10,12 @@ export default function LeaderBoard() {
     fetch("https://math-trivia-backend.herokuapp.com/api/scores/")
       .then(resp => resp.json())
       .then(setTopPlayers)
-      .catch(()=>{console.log('error')});
+      .catch(() => { });
   }, []);
 
   return (
     <div className='leader-board'>
       <h4>Leader Board</h4>
-      {
-        console.log(topPlayers)
-      }
       <ol>
         {
           topPlayers && topPlayers.map((x, index) => <li key={index}>{x.user} ({x.score})</li>)

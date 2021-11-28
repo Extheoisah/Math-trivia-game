@@ -7,7 +7,6 @@ import ScoreComponent from "./ScoreComponent";
 import TriviaContext from "../../context";
 import './gameStart.css';
 import ProgressBar from "../ProgressBar";
-import { Link } from "react-router-dom";
 import { getQuestion } from "../../utils/questionUtils";
 
 
@@ -81,6 +80,21 @@ export const GameStartComponent = () => {
   useEffect(() => {
     score.current = 0;
     play();
+    
+    document.body.addEventListener('keydown', (event)=>
+                                     {
+            const key = event.key;
+            switch (key) {
+                case "ArrowLeft":
+                    answerHandler(true);
+                    break;
+                case "ArrowRight":
+                    answerHandler(false);
+                    break;
+                default:
+            }
+            
+        });
 
     return () => {
       cancelAnimationFrame(animId.current);
@@ -91,7 +105,7 @@ export const GameStartComponent = () => {
 
         // Adding body or contents to send
         body: JSON.stringify({
-          score: score,
+          score: score.current,
           user: user
         }),
 

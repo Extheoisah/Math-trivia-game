@@ -18,7 +18,7 @@ const HomeComponent = () => {
       error.current.style.display='block';
       return;
     }
-    //setUser(user.current.value);
+    setUser(user.current.value);
     navigate('/start')
   }
   
