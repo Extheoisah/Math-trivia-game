@@ -1,31 +1,36 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import CorrectButton from "../Buttons/CorrectButton";
 import WrongButton from "../Buttons/WrongButton";
 import QuestionComponent from "./QuestionComponent";
 import ScoreComponent from "./ScoreComponent";
-import { questions } from "../questions";
 import TriviaContext from "../../context";
 import './gameStart.css';
 import ProgressBar from "../ProgressBar";
 import { Link } from "react-router-dom";
+import { getQuestion } from "../../utils/questionUtils";
+
 
 export const GameStartComponent = () => {
-  const { setScore, score } = useContext(TriviaContext);
+  const { score, user } = useContext(TriviaContext);
+  const [question, setQuestion] = useState(getQuestion());
   const navigate = useNavigate();
   const time = useRef(100);
   const count = useRef(0);
   const animId = useRef(null);
   let timerRef;
+  let scoreRef;
 
 
   const incrementTime = (amt) => {
+
     time.current += amt;
     if (time.current > 100) time.current = 100;
     timerRef.current.style.width = `${time.current}%`;
   }
 
   const decrementTime = (amt) => {
+
     time.current -= amt;
     if (time.current <= 0) {
       navigate('/end');
@@ -35,15 +40,15 @@ export const GameStartComponent = () => {
 
   }
 
-
-  const answerHandler = (isCorrectBtn) => {
-    if (isCorrectBtn) {
-      if (questions[0].answer === "correct") {
-        incrementTime(10);
-        setScore((prev) => prev + 1);
-      }
+  const answerHandler = (buttonValue) => {
+    if (buttonValue === question[2]) {
+      incrementTime(10);
+      score.current++;
+      scoreRef.current.innerText = score.current;
+      setQuestion(getQuestion());
     } else {
       decrementTime(10);
+      setQuestion(getQuestion());
     }
   };
 
@@ -69,11 +74,33 @@ export const GameStartComponent = () => {
     timerRef = r;
   }
 
+  const setScoreRef = (r) => {
+    scoreRef = r;
+  }
+
   useEffect(() => {
-    setScore(0)
+    score.current = 0;
     play();
+
     return () => {
       cancelAnimationFrame(animId.current);
+      fetch("https://math-trivia-backend.herokuapp.com/api/scores/", {
+
+        // Adding method type
+        method: "POST",
+
+        // Adding body or contents to send
+        body: JSON.stringify({
+          score: score,
+          user: user
+        }),
+
+        // Adding headers to the request
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      })
+        .catch(() => { });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -81,21 +108,14 @@ export const GameStartComponent = () => {
   return (
     <>
       <div className="game-start">
-        <ScoreComponent score={score} />
-        <QuestionComponent />
+        <ScoreComponent scoreRef={setScoreRef} />
+        <QuestionComponent question={question} />
         <ProgressBar setTimer={setTimer} />
         <div className="btn">
           <CorrectButton answerHandler={answerHandler} />
           <WrongButton answerHandler={answerHandler} />
         </div>
-
       </div>
-      <Link to='/end'>
-        <button>
-          End Game
-        </button>
-      </Link>
-      <div>Hello</div>
 
     </>
   );

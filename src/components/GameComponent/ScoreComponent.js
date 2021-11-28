@@ -1,6 +1,9 @@
-import React from "react";
+import {useRef, useEffect, useContext} from 'react';
+import TriviaContext from '../../context';
 
-const ScoreComponent = ({ score }) => {
+
+
+const ScoreComponent = ({ scoreRef }) => {
   const divStyles = {
     display: "flex",
     flexDirection: "column",
@@ -9,6 +12,11 @@ const ScoreComponent = ({ score }) => {
     width: "fit-content",
     fontFamily: "Lobster",
   };
+
+  const ref = useRef();
+  const {score} = useContext(TriviaContext);
+
+  useEffect(()=>scoreRef(ref));
 
   return (
     <div style={divStyles}>
@@ -26,8 +34,9 @@ const ScoreComponent = ({ score }) => {
           fontSize: "1.5rem",
         }}
 
+        ref={ref}
       >
-        {score}
+        {score.current}
       </p>
     </div>
   );

@@ -21,11 +21,11 @@ main>p:first-child {
     width: 80%;
 }
 
-#error {
+.error {
     display: none;
 }
 
-#error * {
+.error * {
     color: var(--red);
     font-size: .75em;
     display: inline-block;
@@ -40,6 +40,7 @@ input {
     height: 100%;
     width: 100%;
     caret-color: var(--green);
+    text-transform: capitalize;
 }
 
 .play-layout {
@@ -70,7 +71,7 @@ main {
     user-select: none;
 }
 
-#logo {
+.logo {
     position: relative;
     left: -550px;
     transition: 2s;
