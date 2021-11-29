@@ -8,18 +8,38 @@ import TriviaContext from "../../context";
 import './gameStart.css';
 import ProgressBar from "../ProgressBar";
 import { getQuestion } from "../../utils/questionUtils";
+import { dialogState } from "../../utils/dialogUtil";
 
 
 export const GameStartComponent = () => {
-  const { score, user } = useContext(TriviaContext);
-  const [question, setQuestion] = useState(getQuestion());
+  const { score, user, showDialog, dialogContent, authenticated } = useContext(TriviaContext);
   const navigate = useNavigate();
   const time = useRef(100);
   const count = useRef(0);
   const animId = useRef(null);
+  const [gameOn, setGameOn] = useState(true);
+  const question = useRef(getQuestion())
   let timerRef;
   let scoreRef;
 
+  const scoreMessage = (user, auth) => {
+    return (
+      <div>
+        <p>Great Score! {user}</p>
+        {
+          auth ? <div>
+            <p>Login with your password to update your score</p>
+            <input type="password" name="" placeholder="Enter password" />
+          </div> :
+
+            <div>
+              <p>Let others see your score by creating an account</p>
+              <input type="password" name="" id="" placeholder="Enter password" />
+            </div>
+        }
+      </div>
+    );
+  }
 
   const incrementTime = (amt) => {
 
@@ -32,23 +52,32 @@ export const GameStartComponent = () => {
 
     time.current -= amt;
     if (time.current <= 0) {
-      navigate('/end');
+      endGame();
       return;
     }
     timerRef.current.style.width = `${time.current}%`;
 
   }
 
+  let questionState;
+  const getQuestionState = (s) => {
+    questionState = s;
+  }
+
+
+
   const answerHandler = (buttonValue) => {
-    if (buttonValue === question[2]) {
+    if (buttonValue === question.current[2]) {
       incrementTime(10);
       score.current++;
-      scoreRef.current.innerText = score.current;
-      setQuestion(getQuestion());
+      scoreRef(score.current);
     } else {
       decrementTime(10);
-      setQuestion(getQuestion());
     }
+
+    question.current = getQuestion();
+    questionState(question.current);
+
   };
 
   const play = () => {
@@ -77,53 +106,59 @@ export const GameStartComponent = () => {
     scoreRef = r;
   }
 
+
   useEffect(() => {
     score.current = 0;
+    question.current = getQuestion();
+    questionState(question.current);
     play();
-
-    return () => {
-      cancelAnimationFrame(animId.current);
-      fetch("https://math-trivia-backend.herokuapp.com/api/scores/", {
-
-        // Adding method type
-        method: "POST",
-
-        // Adding body or contents to send
-        body: JSON.stringify({
-          score: score.current,
-          user: user
-        }),
-
-        // Adding headers to the request
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
-      })
-        .catch(() => { });
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handlerKeyDown = (event)=>
-                                     {
-            const key = event.key;
-            switch (key) {
-                case "ArrowLeft":
-                    answerHandler(true);
-                    break;
-                case "ArrowRight":
-                    answerHandler(false);
-                    break;
-                default:
+  const endGame = () => {
+    cancelAnimationFrame(animId.current);
+    fetch("http://localhost:8000/api/scores/", {
+
+      // Adding method type
+      method: "POST",
+
+      // Adding body or contents to send
+      body: JSON.stringify({
+        score: score.current,
+        user: user
+      }),
+
+      // Adding headers to the request
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then(response => {
+        if (response.status === 400) {
+          console.log('failed attempt');
+          dialogContent.current = {
+            ...dialogState["startOpen"], closeListener: () => {
+              navigate('/end');
             }
-            console.log("key!!!")
+          };
+          showDialog();
+        } else {
+          navigate('/end');
         }
+      })
+      .catch(() => { });
+  };
+
+
+
 
   return (
     <>
-      <div className="game-start" onKeyPress={handlerKeyDown}>
+      <div className="game-start">
+        {console.log("rendering home")
+        }
         <ScoreComponent scoreRef={setScoreRef} />
-        <QuestionComponent question={question} />
+        <QuestionComponent state={getQuestionState} />
         <ProgressBar setTimer={setTimer} />
         <div className="btn">
           <CorrectButton answerHandler={answerHandler} />

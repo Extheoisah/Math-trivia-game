@@ -1,4 +1,4 @@
-import {useRef, useEffect, useContext} from 'react';
+import {useRef, useEffect, useContext, useState} from 'react';
 import TriviaContext from '../../context';
 
 
@@ -15,11 +15,19 @@ const ScoreComponent = ({ scoreRef }) => {
 
   const ref = useRef();
   const {score} = useContext(TriviaContext);
+  const [gameScore, setScore] = useState(0);
 
-  useEffect(()=>scoreRef(ref));
+
+  useEffect(()=>{
+    scoreRef(setScore);
+    console.log('score effect called');
+    
+  },[]);
 
   return (
     <div style={divStyles}>
+      {console.log('score rendered')
+      }
       <h2
         style={{
           color: "#3EDA73",
@@ -36,7 +44,7 @@ const ScoreComponent = ({ scoreRef }) => {
 
         ref={ref}
       >
-        {score.current}
+        {gameScore}
       </p>
     </div>
   );
