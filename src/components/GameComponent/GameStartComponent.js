@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import CorrectButton from "../Buttons/CorrectButton";
 import WrongButton from "../Buttons/WrongButton";
@@ -17,29 +17,9 @@ export const GameStartComponent = () => {
   const time = useRef(100);
   const count = useRef(0);
   const animId = useRef(null);
-  const [gameOn, setGameOn] = useState(true);
   const question = useRef(getQuestion())
   let timerRef;
   let scoreRef;
-
-  const scoreMessage = (user, auth) => {
-    return (
-      <div>
-        <p>Great Score! {user}</p>
-        {
-          auth ? <div>
-            <p>Login with your password to update your score</p>
-            <input type="password" name="" placeholder="Enter password" />
-          </div> :
-
-            <div>
-              <p>Let others see your score by creating an account</p>
-              <input type="password" name="" id="" placeholder="Enter password" />
-            </div>
-        }
-      </div>
-    );
-  }
 
   const incrementTime = (amt) => {
 
@@ -106,6 +86,34 @@ export const GameStartComponent = () => {
     scoreRef = r;
   }
 
+  const handleResponse = (response) => {
+
+    switch (response.status) {
+      case 400:
+        console.log('failed attempt');
+        dialogContent.current = {
+          ...dialogState["startOpen"], closeListener: () => {
+            navigate('/end');
+          },
+          argument: user
+        };
+        showDialog();
+        break;
+
+      case 200:
+        console.log('user exit!')
+        dialogContent.current = {
+          ...dialogState["startExistingUser"], closeListener: () => {
+            navigate('/end');
+          },
+          argument: user
+        };
+        showDialog();
+        break;
+      default:
+    }
+  }
+
 
   useEffect(() => {
     score.current = 0;
@@ -116,8 +124,10 @@ export const GameStartComponent = () => {
   }, []);
 
   const endGame = () => {
+    console.log('end game called');
     cancelAnimationFrame(animId.current);
-    fetch("http://localhost:8000/api/scores/", {
+
+    /*    {
 
       // Adding method type
       method: "POST",
@@ -132,21 +142,14 @@ export const GameStartComponent = () => {
       headers: {
         "Content-type": "application/json; charset=UTF-8"
       }
-    })
-      .then(response => {
-        if (response.status === 400) {
-          console.log('failed attempt');
-          dialogContent.current = {
-            ...dialogState["startOpen"], closeListener: () => {
-              navigate('/end');
-            }
-          };
-          showDialog();
-        } else {
-          navigate('/end');
-        }
-      })
-      .catch(() => { });
+    }
+    */
+
+    fetch(`http://localhost:8000/api/scores/${user}`)
+      .then(handleResponse)
+      .catch(() => {
+        console.log('error');
+      });
   };
 
 
