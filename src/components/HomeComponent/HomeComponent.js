@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useContext } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useRef, useContext, useState } from "react";
 import {useNavigate} from 'react-router-dom';
 import { FaExclamationCircle, FaPlay } from "react-icons/fa";
 import TriviaContext from "../../context";
@@ -11,9 +12,14 @@ const HomeComponent = () => {
   const user = useRef(null);
   const error = useRef(null);
   const logo = useRef(null);
-  const {setUser,initialEntry, action, dialogContent} = useContext(TriviaContext)
+  const [dummyState, setDummyState] = useState(null);
+  const {setUser,initialEntry, action, dialogContent, authenticated} = useContext(TriviaContext)
 
   const handleClick = () => {
+    if(authenticated.current===true){
+      navigate('/start');
+      return;
+    }
     if (!user.current.value) {
       error.current.style.display='block';
       return;
@@ -28,6 +34,11 @@ const HomeComponent = () => {
     navigate('/start')
   }
   
+
+  const logout = ()=>{
+    authenticated.current = false;
+    setDummyState(true);
+  }
 
   useEffect(() => {
     logo.current.style.left = '0px';
@@ -47,10 +58,23 @@ const HomeComponent = () => {
       <main>
         <p ref={logo} className='logo'>Math Trivia</p>
 
-        <div className="input-layout">
+        {
+          authenticated.current===true?  
+          
+          <div>
+            <div className='button bg-success' style={{color:'var(--white)', cursor:'pointer'}} onClick={logout}>Log Out</div>
+          </div>
+
+
+          :
+
+
+          <div className="input-layout">
           <input ref={user} type="text" name="" id="username" placeholder="Enter player name" maxLength={40} onChange={()=>error.current.style.display='none'}/>
           <div ref={error} className="error"><FaExclamationCircle color='var(--red)'/><p>Please enter name</p></div>
         </div>
+
+        }
 
           <div className='play-layout' onClick={handleClick}>
             <p>Play</p>

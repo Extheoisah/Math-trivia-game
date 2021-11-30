@@ -88,25 +88,19 @@ export const GameStartComponent = () => {
 
   const handleResponse = (response) => {
 
+    if(authenticated.current===true){
+      navigate('/end');
+      return;
+    }
     switch (response.status) {
-      case 400:
-        console.log('failed attempt');
-        dialogContent.current = {
-          ...dialogState["startOpen"], closeListener: () => {
-            navigate('/end');
-          },
-          argument: user
-        };
-        showDialog();
-        break;
-
+      case 404:
       case 200:
         console.log('user exit!')
         dialogContent.current = {
-          ...dialogState["startExistingUser"], closeListener: () => {
+          ...dialogState[response.status===404?"startOpen":"startExistingUser"], closeListener: () => {
             navigate('/end');
           },
-          argument: user
+          argument: user,
         };
         showDialog();
         break;

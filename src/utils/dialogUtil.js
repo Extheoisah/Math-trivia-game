@@ -1,7 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import TriviaContext from '../context';
 import './dialog.css';
+
+const showLoading = (ref, setter) => {
+  ref.current.style.filter = 'blur(5px)';
+  ref.current.style.pointerEvents = 'none';
+  setter(true);
+}
+
+const dismissLoading = (ref, setter) => {
+  ref.current.style.filter = 'blur(0px)';
+  ref.current.style.pointerEvents = 'all';
+  setter(false);
+}
 
 
 const welcomeMessage = () => {
@@ -18,24 +31,40 @@ const existingUserDialog = (user) => {
 
   const Body = () => {
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate()
     const passwordRef = useRef();
+    const dialogBodyRef = useRef();
+    const { dismissDialog, authenticated } = useContext(TriviaContext);
 
-    const showLoading = (evt) => {
-      evt.target.parentNode.style.filter = 'blur(2px)';
-      evt.target.parentNode.style.pointerEvents = 'none';
-      setLoading(true);
-    }
+    
 
-    const handleSubmit = (evt) => {
+    const handleSubmit = async (evt) => {
       evt.preventDefault();
+      showLoading(dialogBodyRef,setLoading);
+
       let password = passwordRef.current.value;
-      console.log("submitting", password);
-      showLoading(evt);
+
+      let response = await fetch(`http://localhost:8000/api/auth/?user=${user}&password=${password}`)
+        .then(response => response)
+        .catch(() => {
+          console.log('error');
+        });
+
+      dismissLoading(dialogBodyRef,setLoading);
+      if (response.status === 404) {
+        console.log('invalid password');
+      } else {
+        console.log('valid password');
+        authenticated.current = true;
+        dismissDialog();
+        navigate('/end');
+      }
+
     }
 
     return (
       <>
-        <div>
+        <div ref={dialogBodyRef}>
           <p>Welcome back {user}</p>
           <p>Enter your password to login.</p>
           <form method="post" onSubmit={handleSubmit} className='input-layout'>
@@ -56,21 +85,32 @@ const existingUserDialog = (user) => {
 
 const loginDetails = (user) => {
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-    console.log("submitting");
+  
 
+  const Body = ()=>{
+
+    const handleSubmit = (evt) => {
+      evt.preventDefault();
+      console.log("submitting");
+
+
+  
+    }
+
+    return (
+      <>
+        <p>Great score! {user}</p>
+        <p>Get your friends to see your score by registering as a user!</p>
+        <form method="post" onSubmit={handleSubmit} className='input-layout'>
+          <input type="text" placeholder="Enter password" required style={{ marginTop: '5px' }} />
+          <input type="submit" value="Submit" className='button bg-success' />
+        </form>
+      </>
+    );
   }
-  return (
-    <>
-      <p>Great score! {user}</p>
-      <p>Get your friends to see your score by registering as a user!</p>
-      <form method="post" onSubmit={handleSubmit} className='input-layout'>
-        <input type="text" placeholder="Enter password" required style={{ marginTop: '5px' }} />
-        <input type="submit" value="Submit" className='button bg-success' />
-      </form>
-    </>
-  );
+
+  return <Body />
+  
 };
 
 

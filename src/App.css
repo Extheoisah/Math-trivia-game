@@ -21,6 +21,10 @@ a {
     border-radius: 3px;
 }
 
+.button:active {
+    transform: scale(0.98);
+}
+
 .bg-success {
     background-color: var(--green);
 }
