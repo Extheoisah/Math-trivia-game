@@ -9,13 +9,14 @@ import './gameStart.css';
 import ProgressBar from "../ProgressBar";
 import { getQuestion } from "../../utils/questionUtils";
 import { dialogState } from "../../utils/dialogUtil";
+import { updateScore } from "../../utils/generalUtil";
 
+let time = 100;
+let count = 0;
 
 export const GameStartComponent = () => {
-  const { score, user, showDialog, dialogContent, authenticated } = useContext(TriviaContext);
+  const { score, user, showDialog, dialogContent, authenticated, currentHighScore } = useContext(TriviaContext);
   const navigate = useNavigate();
-  const time = useRef(100);
-  const count = useRef(0);
   const animId = useRef(null);
   const question = useRef(getQuestion())
   let timerRef;
@@ -23,19 +24,19 @@ export const GameStartComponent = () => {
 
   const incrementTime = (amt) => {
 
-    time.current += amt;
-    if (time.current > 100) time.current = 100;
-    timerRef.current.style.width = `${time.current}%`;
+    time += amt;
+    if (time > 100) time = 100;
+    timerRef.current.style.width = `${time}%`;
   }
 
   const decrementTime = (amt) => {
 
-    time.current -= amt;
-    if (time.current <= 0) {
+    time -= amt;
+    if (time <= 0) {
       endGame();
       return;
     }
-    timerRef.current.style.width = `${time.current}%`;
+    timerRef.current.style.width = `${time}%`;
 
   }
 
@@ -62,15 +63,15 @@ export const GameStartComponent = () => {
 
   const play = () => {
 
-    count.current++;
+    count++;
 
-    if (count.current % 5 === 0) {
-      count.current = 0;
+    if (count% 5 === 0) {
+      count = 0;
       decrementTime(1);
     }
 
 
-    if (time.current === 0) {
+    if (time === 0) {
       cancelAnimationFrame(animId.current);
       return;
     }
@@ -87,44 +88,29 @@ export const GameStartComponent = () => {
   }
 
 
- const updateScore = async ()=>{
-  let params = {
-
-    method: "PUT",
-    body: JSON.stringify({
-      score: score.current,
-      user: user.current,
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
-  };
-
-  let response = await fetch(`http://127.0.0.1:8000/api/scores/${user.current}/`, params)
-  .then(resp=>resp)
-  .catch(()=>{
-    console.log('error');
-    
-  });
-
-  if(response.status===200){
-    navigate('/end');
-  }else{
-    console.log('error updating')
-  }
-
- }
-
   const handleResponse = (response) => {
 
     if(authenticated.current===true){
-      updateScore();
+      
+      if(score.current > currentHighScore.current){
+        //show loading
+        let response = updateScore(score.current, user.current);
+        response.then(data=>{
+          if(data.status===200){
+            currentHighScore.current= score.current;
+            navigate('/end');
+          }else{
+            console.log('error updating')
+          }
+        });
+    
+      }
+      else navigate('/end');
       return;
     }
     switch (response.status) {
       case 404:
       case 200:
-        console.log('user exit!')
         dialogContent.current = {
           ...dialogState[response.status===404?"startOpen":"startExistingUser"], closeListener: () => {
             navigate('/end');
@@ -139,18 +125,20 @@ export const GameStartComponent = () => {
 
 
   useEffect(() => {
-    score.current = 0;
     question.current = getQuestion();
     questionState(question.current);
+    score.current = 0;
+    count = 0
+    time = 100;
     play();
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const endGame = () => {
-    console.log('end game called');
     cancelAnimationFrame(animId.current);
 
-    fetch(`http://localhost:8000/api/scores/${user.current}`)
+    fetch(`http://localhost:8000/api/scores/${user.current}/`)
       .then(handleResponse)
       .catch(() => {
         console.log('error');

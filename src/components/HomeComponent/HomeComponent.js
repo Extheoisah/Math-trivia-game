@@ -5,6 +5,7 @@ import { FaExclamationCircle, FaPlay } from "react-icons/fa";
 import TriviaContext from "../../context";
 import './HomeComponent.css';
 import { dialogState } from "../../utils/dialogUtil";
+import { updateScore } from "../../utils/generalUtil";
 
 
 const HomeComponent = () => {
@@ -17,6 +18,7 @@ const HomeComponent = () => {
 
   const handleClick = () => {
     let name = username.current.value;
+  
     if(authenticated.current===true){
       navigate('/start');
       return;

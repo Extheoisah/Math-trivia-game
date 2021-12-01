@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { FaExclamationCircle } from "react-icons/fa";
 import TriviaContext from '../context';
 import './dialog.css';
+import { updateScore } from './generalUtil';
 
 const showLoading = (ref, setter) => {
   ref.current.style.filter = 'blur(5px)';
@@ -28,12 +29,20 @@ const welcomeMessage = () => {
   )
 };
 
-const createdUser = (user) => {
+const createdUser = (mUser) => {
 
   const Body = () => {
+    const {user, currentHighScore, score} = useContext(TriviaContext);
+
+    useEffect(()=>{
+      user.current = mUser;
+      currentHighScore.current = score.current;
+      
+    },[]);
+
     return (
       <>
-        <h6>Welcome onboard <span style={{ color: 'var(--green)' }}>{user}</span></h6>
+        <h4>Welcome onboard <span style={{ color: 'var(--green)' }}>{mUser}</span></h4>
         <p>Please keep your password safe as we don't have any backup if you misplace it.</p>
         <p>Enjoy the game and do leave a <a href="mailto:saturdaybaribor@gmail.com">feedback</a></p>
       </>
@@ -50,7 +59,7 @@ const existingUserDialog = (userParam) => {
     const passwordRef = useRef();
     const dialogBodyRef = useRef();
     const error = useRef();
-    const {user, dismissDialog, showDialog, dialogContent, authenticated } = useContext(TriviaContext);
+    const { user, score, dismissDialog, showDialog, dialogContent, authenticated, currentHighScore } = useContext(TriviaContext);
 
     const handleChange = () => {
       error.current.style.display = 'none';
@@ -62,22 +71,42 @@ const existingUserDialog = (userParam) => {
 
       let password = passwordRef.current.value;
 
-      let response = await fetch(`http://localhost:8000/api/auth/?user=${userParam}&password=${password}`)
-        .then(response => response)
+      let mResponse;
+
+      await fetch(`http://localhost:8000/api/auth/?user=${userParam}&password=${password}`)
+        .then(response => {
+          mResponse = response;
+          return response.json();
+        })
+        .then(data => currentHighScore.current = data[0].score)
         .catch(() => {
           console.log('error');
         });
 
       dismissLoading(dialogBodyRef, setLoading);
-      if (response.status === 404) {
+      if (mResponse.status === 404) {
         error.current.style.display = 'block';
         error.current.lastChild.innerText = 'invalid password';
-        console.log('invalid password');
       } else {
-        console.log('valid password');
         authenticated.current = true;
+        user.current = userParam;
+        if (score.current > currentHighScore.current) {
+          let response = updateScore(score.current, userParam);
+          response.then(data => {
+
+            if (data.status === 200) {
+              showLoading(dialogBodyRef, setLoading);
+              setTimeout(() => navigate('/end'), 500);
+            } else {
+              console.log('error updating')
+            }
+
+          });
+        } else {
+          navigate('/end');
+        }
         dismissDialog();
-        navigate('/end');
+
       }
 
     }
@@ -90,7 +119,7 @@ const existingUserDialog = (userParam) => {
         ...dialogState["startOpen"], closeListener: () => {
           navigate('/end');
         },
-        argument: user.current,
+        argument: '',
         hasUsernameField: true
       };
 
@@ -192,8 +221,7 @@ const loginDetails = (user) => {
       }
       let response = await fetch('http://127.0.0.1:8000/api/scores/', params)
         .then(response => response)
-        .catch(err => {
-          console.log(err.message);
+        .catch(() => {
           dismissLoading(dialogBodyRef, setLoading);
         });
 
@@ -203,7 +231,6 @@ const loginDetails = (user) => {
         fetch(`http://127.0.0.1:8000/api/scores/${username}/`, params)
           .then(() => {
             dismissLoading(dialogBodyRef, setLoading);
-            console.log('created user successfully');
             dialogContent.current = {
               ...dialogState["accountCreationSuccessful"], closeListener: () => {
                 navigate('/end');
@@ -213,7 +240,7 @@ const loginDetails = (user) => {
             dismissDialog();
             setTimeout(showDialog, 200);
             authenticated.current = true;
-            
+
           })
           .catch(err => {
             console.log(err.message);
