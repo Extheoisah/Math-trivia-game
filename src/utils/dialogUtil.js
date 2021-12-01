@@ -37,7 +37,7 @@ const createdUser = (mUser) => {
     useEffect(()=>{
       user.current = mUser;
       currentHighScore.current = score.current;
-      
+
     },[]);
 
     return (
@@ -73,7 +73,7 @@ const existingUserDialog = (userParam) => {
 
       let mResponse;
 
-      await fetch(`http://localhost:8000/api/auth/?user=${userParam}&password=${password}`)
+      await fetch(`https://math-trivia-backend.herokuapp.com/api/auth/?user=${userParam}&password=${password}`)
         .then(response => {
           mResponse = response;
           return response.json();
@@ -198,9 +198,9 @@ const loginDetails = (user) => {
         }
       };
 
-      let resp = await fetch(`http://127.0.0.1:8000/api/scores/${username}/`)
+      let resp = await fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${username}/`)
         .then(response => response)
-        .catch(err => {
+        .catch(() => {
           //handle error
         });
       if (resp.status === 200) {
@@ -219,7 +219,7 @@ const loginDetails = (user) => {
         dismissLoading(dialogBodyRef, setLoading);
         return;
       }
-      let response = await fetch('http://127.0.0.1:8000/api/scores/', params)
+      let response = await fetch('https://math-trivia-backend.herokuapp.com/api/scores/', params)
         .then(response => response)
         .catch(() => {
           dismissLoading(dialogBodyRef, setLoading);
@@ -228,7 +228,7 @@ const loginDetails = (user) => {
 
       if (response.status === 201) {
         params.method = 'PUT';
-        fetch(`http://127.0.0.1:8000/api/scores/${username}/`, params)
+        fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${username}/`, params)
           .then(() => {
             dismissLoading(dialogBodyRef, setLoading);
             dialogContent.current = {

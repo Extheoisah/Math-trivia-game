@@ -138,7 +138,7 @@ export const GameStartComponent = () => {
   const endGame = () => {
     cancelAnimationFrame(animId.current);
 
-    fetch(`http://localhost:8000/api/scores/${user.current}/`)
+    fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${user.current}/`)
       .then(handleResponse)
       .catch(() => {
         console.log('error');

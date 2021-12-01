@@ -12,7 +12,7 @@ export const updateScore = async(score, user) => {
         }
     };
 
-    let response = await fetch(`http://127.0.0.1:8000/api/scores/${user}/`, params)
+    let response = await fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${user}/`, params)
         .then(resp => resp)
         .catch(() => {
             console.log('error');

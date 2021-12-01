@@ -7,7 +7,7 @@ export default function LeaderBoard() {
   const [topPlayers, setTopPlayers] = useState(null)
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/scores/")
+    fetch("https://math-trivia-backend.herokuapp.com/api/scores/")
       .then(resp => resp.json())
       .then(setTopPlayers)
       .catch(() => { });
