@@ -19,7 +19,7 @@ export default function LeaderBoard() {
       <div className='leader-board'>
         <ol>
           {
-            topPlayers && [...topPlayers,...topPlayers].map((x, index) => <li key={index}>{x.user} ({x.score})</li>)
+            topPlayers && topPlayers.map((x, index) => <li key={index}>{x.user} ({x.score})</li>)
           }
         </ol>
       </div>

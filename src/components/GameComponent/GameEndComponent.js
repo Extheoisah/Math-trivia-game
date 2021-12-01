@@ -21,9 +21,7 @@ const GameEndComponent = () => {
       <ProgressBar setTimer={() => { }} />
       <div className='leader-board-layout'>
         <LeaderBoard />
-        <Link to='/start'>
-          <RetryButton />
-        </Link>
+        <RetryButton/>
       </div>
       <Link to='/'>
         <button>

@@ -9,28 +9,29 @@ import { dialogState } from "../../utils/dialogUtil";
 
 const HomeComponent = () => {
   const navigate = useNavigate();
-  const user = useRef(null);
+  const username = useRef(null);
   const error = useRef(null);
   const logo = useRef(null);
   const [dummyState, setDummyState] = useState(null);
-  const {setUser,initialEntry, action, dialogContent, authenticated} = useContext(TriviaContext)
+  const {user,initialEntry, action, dialogContent, authenticated} = useContext(TriviaContext)
 
   const handleClick = () => {
+    let name = username.current.value;
     if(authenticated.current===true){
       navigate('/start');
       return;
     }
-    if (!user.current.value) {
+    if (!name) {
       error.current.style.display='block';
       return;
     }
     let format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~0-9]/;
-    if(format.test(user.current.value.trim())){
+    if(format.test(name.trim())){
       error.current.style.display='block';
       error.current.lastChild.innerText = "Username cannot contain numbers, spaces or special characters";
       return;
     }
-    setUser(user.current.value);
+    user.current = name;
     navigate('/start')
   }
   
@@ -68,9 +69,10 @@ const HomeComponent = () => {
 
           :
 
-
+          <div className="input-container">
           <div className="input-layout">
-          <input ref={user} type="text" name="" id="username" placeholder="Enter player name" maxLength={40} onChange={()=>error.current.style.display='none'}/>
+          <input ref={username} type="text" name="" id="username" placeholder="Enter player name" maxLength={40} onChange={()=>error.current.style.display='none'}/>
+          </div>
           <div ref={error} className="error"><FaExclamationCircle color='var(--red)'/><p>Please enter name</p></div>
         </div>
 

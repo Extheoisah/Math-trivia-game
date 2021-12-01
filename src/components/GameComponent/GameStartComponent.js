@@ -86,10 +86,39 @@ export const GameStartComponent = () => {
     scoreRef = r;
   }
 
+
+ const updateScore = async ()=>{
+  let params = {
+
+    method: "PUT",
+    body: JSON.stringify({
+      score: score.current,
+      user: user.current,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  };
+
+  let response = await fetch(`http://127.0.0.1:8000/api/scores/${user.current}/`, params)
+  .then(resp=>resp)
+  .catch(()=>{
+    console.log('error');
+    
+  });
+
+  if(response.status===200){
+    navigate('/end');
+  }else{
+    console.log('error updating')
+  }
+
+ }
+
   const handleResponse = (response) => {
 
     if(authenticated.current===true){
-      navigate('/end');
+      updateScore();
       return;
     }
     switch (response.status) {
@@ -100,7 +129,7 @@ export const GameStartComponent = () => {
           ...dialogState[response.status===404?"startOpen":"startExistingUser"], closeListener: () => {
             navigate('/end');
           },
-          argument: user,
+          argument: user.current,
         };
         showDialog();
         break;
@@ -121,25 +150,7 @@ export const GameStartComponent = () => {
     console.log('end game called');
     cancelAnimationFrame(animId.current);
 
-    /*    {
-
-      // Adding method type
-      method: "POST",
-
-      // Adding body or contents to send
-      body: JSON.stringify({
-        score: score.current,
-        user: user
-      }),
-
-      // Adding headers to the request
-      headers: {
-        "Content-type": "application/json; charset=UTF-8"
-      }
-    }
-    */
-
-    fetch(`http://localhost:8000/api/scores/${user}`)
+    fetch(`http://localhost:8000/api/scores/${user.current}`)
       .then(handleResponse)
       .catch(() => {
         console.log('error');

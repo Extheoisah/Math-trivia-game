@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {useRef, useEffect, useContext, useState} from 'react';
 import TriviaContext from '../../context';
 
@@ -15,13 +16,11 @@ const ScoreComponent = ({ scoreRef }) => {
 
   const ref = useRef();
   const {score} = useContext(TriviaContext);
-  const [gameScore, setScore] = useState(0);
+  const [gameScore, setScore] = useState(null);
 
 
   useEffect(()=>{
     scoreRef(setScore);
-    console.log('score effect called');
-    
   },[]);
 
   return (
@@ -44,7 +43,9 @@ const ScoreComponent = ({ scoreRef }) => {
 
         ref={ref}
       >
-        {gameScore}
+        {
+          gameScore? gameScore:score.current
+        }
       </p>
     </div>
   );
