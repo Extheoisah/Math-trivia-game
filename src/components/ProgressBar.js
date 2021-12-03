@@ -1,9 +1,11 @@
+import React from 'react';
 import {useRef,useEffect} from 'react';
-
 import './progressBar.css';
 
+/**
+ * A component that displays the progress or time left for game.
+ */
  const  ProgressBar =({setTimer})=> {
-
     const timerRef = useRef();
 
     useEffect(()=>{

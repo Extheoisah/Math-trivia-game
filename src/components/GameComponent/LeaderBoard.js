@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { urls } from '../../utils/api';
 import './leaderBoard.css';
 
 
@@ -7,7 +8,7 @@ export default function LeaderBoard() {
   const [topPlayers, setTopPlayers] = useState(null)
 
   useEffect(() => {
-    fetch("https://math-trivia-backend.herokuapp.com/api/scores/")
+    fetch(urls.scoresBase)
       .then(resp => resp.json())
       .then(setTopPlayers)
       .catch(() => { });

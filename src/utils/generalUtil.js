@@ -12,11 +12,29 @@ export const updateScore = async(score, user) => {
         }
     };
 
-    let response = await fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${user}/`, params)
+    let response = await fetch(''.format(), params)
         .then(resp => resp)
         .catch(() => {
             console.log('error');
         })
 
     return response;
+}
+
+export const validateInput = (value, errorRef) => {
+
+    if (!value) {
+        //empty input
+        errorRef.current.style.display = 'block';
+        errorRef.current.lastChild.innerText = 'Please enter a name';
+        return false;
+    }
+
+    let format = /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~0-9]/;
+    if (format.test(value.trim())) {
+        errorRef.current.style.display = 'block';
+        errorRef.current.lastChild.innerText = 'Only letters allowed';
+        return false;
+    }
+    return true;
 }

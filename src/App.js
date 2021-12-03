@@ -1,14 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRef, useEffect } from "react";
-import "./App.css";
-
 import TriviaContext from "./context";
 import { Outlet } from "react-router";
 import { Dialog } from "./utils/dialogUtil";
+import "./App.css";
 
 
 function App() {
-  
   
   const score = useRef(0);
   const user = useRef('');
@@ -57,8 +55,6 @@ function App() {
       <TriviaContext.Provider value={{ score, user, dismissDialog, initialEntry, authenticated, dialogCallBack, action, showDialog, dialogContent, currentHighScore }}>
         <div ref={appRef} className="App">
 
-
-          {console.log('rednnd')}
           <Outlet />
           <footer>
             <p>&copy; <a href='http://github.com/extheoisah'>Theophilus</a> &amp; <a href='https://linkedin.com/in/baribor-saturday'>Baribor</a>, 2021.</p>
@@ -68,9 +64,6 @@ function App() {
         <Dialog stateHandler={getDialogCallback} />
       </TriviaContext.Provider>
     </div>
-
-
-
 
   );
 }

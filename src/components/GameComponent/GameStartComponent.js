@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
-import CorrectButton from "../Buttons/CorrectButton";
-import WrongButton from "../Buttons/WrongButton";
 import QuestionComponent from "./QuestionComponent";
 import ScoreComponent from "./ScoreComponent";
 import TriviaContext from "../../context";
@@ -10,6 +8,8 @@ import ProgressBar from "../ProgressBar";
 import { getQuestion } from "../../utils/questionUtils";
 import { dialogState } from "../../utils/dialogUtil";
 import { updateScore } from "../../utils/generalUtil";
+import { urls } from "../../utils/api";
+import Button from "../Buttons/Button";
 
 let time = 100;
 let count = 0;
@@ -144,7 +144,7 @@ export const GameStartComponent = () => {
     dialogContent.current = dialogState['loading']
     setTimeout(showDialog,10);
 
-    fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${user.current}/`)
+    fetch(`${urls.scoresBase}${user.current}/`)
       .then(handleResponse)
       .catch(() => {
         console.log('error');
@@ -161,8 +161,8 @@ export const GameStartComponent = () => {
         <QuestionComponent state={getQuestionState} />
         <ProgressBar setTimer={setTimer} />
         <div className="btn">
-          <CorrectButton answerHandler={answerHandler} />
-          <WrongButton answerHandler={answerHandler} />
+          <Button clickHandler={()=>{answerHandler(true)}} variation='correct'/>
+          <Button clickHandler={()=>{answerHandler(false)}} variation='wrong'/>
         </div>
       </div>
 

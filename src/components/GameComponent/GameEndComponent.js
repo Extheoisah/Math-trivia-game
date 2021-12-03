@@ -4,12 +4,12 @@ import ProgressBar from "../ProgressBar";
 import LeaderBoard from "./LeaderBoard";
 import ScoreComponent from "./ScoreComponent";
 import './gameEnd.css';
-import { Link } from "react-router-dom";
-import RetryButton from "../Buttons/RetryButton";
-
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../Buttons/Button";
 
 const GameEndComponent = () => {
   const { score } = useContext(TriviaContext);
+  const navigate = useNavigate();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
@@ -21,7 +21,7 @@ const GameEndComponent = () => {
       <ProgressBar setTimer={() => { }} />
       <div className='leader-board-layout'>
         <LeaderBoard />
-        <RetryButton/>
+        <Button clickHandler={()=>{navigate('/start')}} variation='default'/>
       </div>
       <Link to='/'>
         <button>

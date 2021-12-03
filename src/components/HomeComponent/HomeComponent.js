@@ -3,15 +3,15 @@ import React, { useEffect, useRef, useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { FaExclamationCircle, FaPlay } from "react-icons/fa";
 import TriviaContext from "../../context";
-import './HomeComponent.css';
 import { dialogState } from "../../utils/dialogUtil";
-import ScoreComponent from "../GameComponent/ScoreComponent";
+import './HomeComponent.css';
+import { validateInput } from "../../utils/generalUtil";
 
 
 const HomeComponent = () => {
   const navigate = useNavigate();
   const username = useRef(null);
-  const error = useRef(null);
+  const error = useRef();
   const logo = useRef(null);
   const [dummyState, setDummyState] = useState(null);
   const { user, initialEntry, action, dialogContent, authenticated, score } = useContext(TriviaContext)
@@ -23,18 +23,10 @@ const HomeComponent = () => {
       return;
     }
 
-
     let name = username.current.value;
-    if (!name) {
-      error.current.style.display = 'block';
-      return;
-    }
-    let format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~0-9]/;
-    if (format.test(name.trim())) {
-      error.current.style.display = 'block';
-      error.current.lastChild.innerText = "Username cannot contain numbers, spaces or special characters";
-      return;
-    }
+    let validInput = validateInput(name, error);
+    if(!validInput) return;
+
     user.current = name;
     navigate('/start')
   }

@@ -3,22 +3,36 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { FaExclamationCircle } from "react-icons/fa";
 import TriviaContext from '../context';
+import { updateScore, validateInput } from './generalUtil';
+import { urls } from './api';
 import './dialog.css';
-import { updateScore } from './generalUtil';
 
+/**
+ * Display a loading spinner in the dialog, disabling any user interraction
+ * @param {*} ref a reference to the body of the dialog
+ * @param {*} setter a state setter of the loading component
+ */
 const showLoading = (ref, setter) => {
   ref.current.style.filter = 'blur(5px)';
   ref.current.style.pointerEvents = 'none';
   setter(true);
 }
 
+
+/**
+ * Stops the loading display, re-enabling user interraction
+ * @param {*} ref a reference to the body of the dialog
+ * @param {*} setter a state setter of the loading component
+ */
 const dismissLoading = (ref, setter) => {
   ref.current.style.filter = 'blur(0px)';
   ref.current.style.pointerEvents = 'all';
   setter(false);
 }
 
-
+/**
+ * Initial dialog content that shows when a user visit the site.
+ */
 const welcomeMessage = () => {
   return (
     <>
@@ -29,6 +43,10 @@ const welcomeMessage = () => {
   )
 };
 
+
+/**
+ * Notification dialog that pops up after a successful user creation. 
+ */
 const createdUser = (mUser) => {
 
   const Body = () => {
@@ -50,6 +68,7 @@ const createdUser = (mUser) => {
   }
   return <Body />
 }
+
 
 const existingUserDialog = (userParam) => {
 
@@ -73,7 +92,7 @@ const existingUserDialog = (userParam) => {
 
       let mResponse;
 
-      await fetch(`https://math-trivia-backend.herokuapp.com/api/auth/?user=${userParam}&password=${password}`)
+      await fetch(`${urls.authBase}?user=${userParam}&password=${password}`)
         .then(response => {
           mResponse = response;
           return response.json();
@@ -154,8 +173,6 @@ const existingUserDialog = (userParam) => {
 }
 
 
-
-
 const loginDetails = (user) => {
 
 
@@ -197,7 +214,7 @@ const loginDetails = (user) => {
         }
       };
 
-      let resp = await fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${username}/`)
+      let resp = await fetch(`${urls.scoresBase}${username}/`)
         .then(response => response)
         .catch(() => {
           //handle error
@@ -210,14 +227,13 @@ const loginDetails = (user) => {
         return
       }
 
-      let format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~0-9]/;
-      if (format.test(username)) {
-        error.current.style.display = 'block';
-        error.current.lastChild.innerText = "Only letters allowed";
+      let validName = validateInput(username, error);
+      if(!validName){
         dismissLoading(dialogBodyRef, setLoading);
-        return;
+        return
       }
-      let response = await fetch('https://math-trivia-backend.herokuapp.com/api/scores/', params)
+
+      let response = await fetch(urls.scoresBase, params)
         .then(response => response)
         .catch(() => {
           dismissLoading(dialogBodyRef, setLoading);
@@ -226,7 +242,7 @@ const loginDetails = (user) => {
 
       if (response.status === 201) {
         params.method = 'PUT';
-        fetch(`https://math-trivia-backend.herokuapp.com/api/scores/${username}/`, params)
+        fetch(`${urls.scoresBase}${username}/`, params)
           .then(() => {
             dismissLoading(dialogBodyRef, setLoading);
             dialogContent.current = {
@@ -287,6 +303,10 @@ const loginDetails = (user) => {
 };
 
 
+
+/**
+ * A plain dialog that shows a loading spinner and an error message if need be.
+ */
 const loadingDialog = ()=>{
 
   const Body = ()=>{
@@ -342,7 +362,10 @@ export const dialogState = {
 
 
 
-
+/**
+ * A component for user interaction and notification.
+ * The stateHandler property is a function that receives the state function of the dialog.
+ */
 export const Dialog = ({ stateHandler }) => {
   const { dismissDialog, dialogContent } = useContext(TriviaContext);
   const [isVisible, setIsVisible] = useState(false);
